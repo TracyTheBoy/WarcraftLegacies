@@ -1,4 +1,5 @@
-﻿using MacroTools.FactionSystem;
+﻿using MacroTools.Augments;
+using MacroTools.FactionSystem;
 using WarcraftLegacies.Source.Setup.FactionSetup;
 using static War3Api.Common;
 
@@ -34,6 +35,7 @@ namespace WarcraftLegacies.Source.GameLogic
 
       DestroyTimer(_timer);
       _state = CinematicState.Finished;
+      AugmentSystem.ShowAugmentPage(GetLocalPlayer());
     }
 
     private static void PlayFactionMusic()

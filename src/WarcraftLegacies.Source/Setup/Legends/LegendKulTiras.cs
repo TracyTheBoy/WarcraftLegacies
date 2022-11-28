@@ -1,6 +1,8 @@
-using MacroTools;
+﻿using MacroTools;
+using MacroTools.Augments;
 using MacroTools.Extensions;
 using MacroTools.FactionSystem;
+using WarcraftLegacies.Source.Setup.FactionSetup;
 using static War3Api.Common;
 
 namespace WarcraftLegacies.Source.Setup.Legends
@@ -40,6 +42,7 @@ namespace WarcraftLegacies.Source.Setup.Legends
         Unit = preplacedUnitSystem.GetUnit(Constants.UNIT_H046_BORALUS_KEEP_KUL_TIRAS),
         DeathMessage = "Boralus Keep has fallen" //Todo: pointless flavour
       };
+      LegendBoralus.ChangedOwner += OnBoralusOwnerChanged;
       Legend.Register(LegendBoralus);
 
       Flagship = new Legend
@@ -48,6 +51,14 @@ namespace WarcraftLegacies.Source.Setup.Legends
       };
       Flagship.Unit.SetInvulnerable(true);
       Flagship.Unit.Pause(true);
+    }
+
+    private static void OnBoralusOwnerChanged(object? sender, LegendChangeOwnerEventArgs eventArgs)
+    {
+      if (KultirasSetup.Kultiras != null)
+        if (eventArgs.Legend.OwningPlayer == KultirasSetup.Kultiras.Player) 
+          AugmentSystem.ShowAugmentPage(eventArgs.Legend.OwningPlayer);
+        
     }
   }
 }
