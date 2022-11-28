@@ -41,9 +41,7 @@ namespace MacroTools.Powers
 
     private void OnUnitTakesDamage()
     {
-      Console.WriteLine("Entered handler");
       var triggerUnit = GetTriggerUnit();
-
       if (UnitByTriggers.ContainsKey(triggerUnit))
       {
         foreach (var timer in UnitByTriggers[triggerUnit])
@@ -58,11 +56,9 @@ namespace MacroTools.Powers
       {
         ot2.Start(1, true, () =>
         {
-          Console.WriteLine("unit regenerating " + _percentageOfHitPoints / 100 * BlzGetUnitMaxHP(triggerUnit) +" hp");
           SetUnitState(triggerUnit, UNIT_STATE_LIFE, GetUnitState(triggerUnit, UNIT_STATE_LIFE) +  _percentageOfHitPoints / 100 * BlzGetUnitMaxHP(triggerUnit));
           if (GetUnitState(triggerUnit, UNIT_STATE_LIFE) == BlzGetUnitMaxHP(triggerUnit))
           {
-            Console.WriteLine("unit full");
             GetExpiredTimer().Destroy();
           }
         });
