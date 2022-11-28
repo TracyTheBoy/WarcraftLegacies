@@ -22,7 +22,12 @@ namespace MacroTools
     /// A unit owned by a specific player dies.
     /// </summary>
     public static string PlayerUnitDies => nameof(PlayerUnitDies);
-    
+
+    /// <summary>
+    /// A unit owned by a specific player takes damage.
+    /// </summary>
+    public static string PlayerUnitDamaged => nameof(PlayerUnitDamaged);
+
     static CustomPlayerUnitEvents()
     {
       PlayerUnitEvents.AddCustomEventFilter(EVENT_PLAYER_UNIT_TRAIN_FINISH,
@@ -36,6 +41,10 @@ namespace MacroTools
       PlayerUnitEvents.AddCustomEventFilter(EVENT_PLAYER_UNIT_DEATH,
         PlayerUnitDies,
         () => GetPlayerId(GetOwningPlayer(GetTriggerUnit())));
+
+      PlayerUnitEvents.AddCustomEventFilter(EVENT_PLAYER_UNIT_DAMAGING,
+       PlayerUnitDamaged,
+       () => GetPlayerId(GetOwningPlayer(GetTriggerUnit())));
     }
   }
 }
