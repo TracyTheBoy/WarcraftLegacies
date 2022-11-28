@@ -17,6 +17,7 @@ namespace MacroTools.Augments
       /// <param name="percentageOfHitPoints">Trained units get extra attack damage equal to this percentage of their hit points.</param>
       public TitanicStrengthAugment(float percentageOfHitPoints)
       {
+         Category = Category.Strength;
          _percentageOfHitPoints = percentageOfHitPoints;
          IconName = "ArmorGolem";
          Name = "Titanic Strength";

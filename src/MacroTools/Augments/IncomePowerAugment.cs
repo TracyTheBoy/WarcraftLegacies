@@ -17,6 +17,7 @@ namespace MacroTools.Augments
       /// <param name="income">The amount of income to grant the selecting player.</param>
       public IncomePowerAugment(int income)
       {
+         Category = Category.Economy;
          _income = income;
          IconName = "ChestOfGold";
          Name = "Offshore Investments";

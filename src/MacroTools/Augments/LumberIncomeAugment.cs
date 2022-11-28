@@ -17,6 +17,7 @@ namespace MacroTools.Augments
       /// <param name="income">The amount of lumber income to grant the selecting player.</param>
       public LumberIncomeAugment(int income)
       {
+         Category = Category.Economy;
          _income = income;
          IconName = "BundleOfLumber";
          Name = "Ysera's Gift";

@@ -23,11 +23,16 @@ namespace MacroTools.Augments
          }
       }
 
-      /// <summary>
-      /// The file name for the icon used to represent this <see cref="Augment"/>,
-      /// e.g. "ReplaceableTextures\CommandButtons\BTNPeasant.blp".
-      /// </summary>
-      public string? IconPath { get; protected init; }
+    /// <summary>
+    /// 
+    /// </summary>
+    public Category Category { get; set; }
+
+    /// <summary>
+    /// The file name for the icon used to represent this <see cref="Augment"/>,
+    /// e.g. "ReplaceableTextures\CommandButtons\BTNPeasant.blp".
+    /// </summary>
+    public string? IconPath { get; protected init; }
 
       /// <summary>
       /// A user-friendly name for this <see cref="Augment"/>.

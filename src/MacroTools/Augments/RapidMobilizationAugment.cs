@@ -17,6 +17,7 @@ namespace MacroTools.Augments
     /// <param name="percentageChance">The chance for trained units to be copied.</param>
     public RapidMobilizationAugment(float percentageChance)
     {
+      Category = Category.Strength;
       _chance = percentageChance;
       IconName = "Footman";
       Name = "Rapid Mobilization";

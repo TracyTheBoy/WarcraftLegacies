@@ -18,6 +18,7 @@ namespace MacroTools.Augments
       /// <param name="experience">The amount of experience to give to the <see cref="Legend"/> when this is selected.</param>
       public HeroExperienceAugment(Legend legend, int experience)
       {
+          Category = Category.Strength;
          _legend = legend;
          _experience = experience;
          Name = $"Leadership: {legend.Name}";
