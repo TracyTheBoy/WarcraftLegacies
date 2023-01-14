@@ -3,6 +3,7 @@ using MacroTools.ControlPointSystem;
 using MacroTools.Mechanics;
 using MacroTools.PassiveAbilitySystem;
 using MacroTools.UserInterface;
+using System.Collections.Generic;
 using WarcraftLegacies.Source.ArtifactBehaviour;
 using WarcraftLegacies.Source.GameLogic;
 using WarcraftLegacies.Source.GameLogic.GameEnd;
@@ -59,7 +60,7 @@ namespace WarcraftLegacies.Source.Setup
       SpellsSetup.Setup();
       CheatSetup.Setup();
       CommandSetup.Setup();
-      ControlPointVictory.Setup();
+      Victory.Setup(new List<IVictoryCondition> { new ControlPointVictoryCondition(), new LegendaryHeroVictoryCondition() });
       SilvermoonDies.Setup();
       GameTime.Setup();
       FactionMultiboard.Setup();

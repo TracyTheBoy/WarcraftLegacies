@@ -77,6 +77,16 @@ namespace MacroTools.FactionSystem
     /// </summary>
     public EventHandler<Faction>? ScoreStatusChanged;
 
+    /// <summary>
+    /// The amount of <see cref="Capital"/>s this faction has killed
+    /// </summary>
+    public int CaptialsDestroyed { get; set; }
+
+    /// <summary>
+    /// The amount of <see cref="LegendaryHero"/>es this faction has killed
+    /// </summary>
+    public int LegendaryHeroesKilled { get; set; }
+
     static Faction()
     {
       PlayerUnitEvents.Register(ResearchEvent.IsFinished, () =>
@@ -91,7 +101,7 @@ namespace MacroTools.FactionSystem
           if (research == null || !research.IncompatibleWith.Any(x => faction.GetObjectLevel(x.ResearchTypeId) > 0))
           {
             faction.SetObjectLevel(researchId, GetPlayerTechCount(GetTriggerPlayer(), researchId, true));
-            if (research == null) 
+            if (research == null)
               return;
             research.OnResearch(GetTriggerPlayer());
             foreach (var otherResearch in research.IncompatibleWith)
@@ -111,6 +121,37 @@ namespace MacroTools.FactionSystem
     }
 
     /// <summary>
+    /// Increments the <see cref="CaptialsDestroyed"/> when a <see cref="Faction"/> has destroyed a <see cref="Capital"/> that is not part of its <see cref="Team"/>
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="args"></param>
+    public void OnCapitalDestroyed(object? sender, LegendDiesEventArgs args)
+    {
+      if (args.KillingPlayer.GetFaction().Name != Name)
+        return;
+
+      if (args.KilledLegend.OwningPlayer != null && args.KilledLegend.OwningPlayer.GetTeam().Contains(Player))
+        return;
+      CaptialsDestroyed++;
+    }
+
+    /// <summary>
+    /// Increments the <see cref="LegendaryHeroesKilled"/> when a <see cref="Faction"/> has killed a <see cref="LegendaryHero"/> that is not part of its <see cref="Team"/>
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="args"></param>
+    public void OnLegendaryHeroKilled(object? sender, LegendDiesEventArgs args)
+    {
+      if (args.KillingPlayer.GetFaction().Name != Name)
+        return;
+
+      if (args.KilledLegend.OwningPlayer != null && args.KilledLegend.OwningPlayer.GetTeam().Contains(Player))
+        return;
+
+      LegendaryHeroesKilled++;
+    }
+
+    /// <summary>
     ///   Displayed to the <see cref="Faction" /> when the game starts.
     /// </summary>
     public string? IntroText { get; init; }
@@ -120,7 +161,7 @@ namespace MacroTools.FactionSystem
     /// will be represented by this unit type.
     /// </summary>
     public int? ControlPointDefenderUnitTypeId { get; init; }
-    
+
     public int StartingGold { get; set; }
 
     public int StartingLumber { get; set; }
@@ -281,7 +322,7 @@ namespace MacroTools.FactionSystem
       _icon = icon;
       FoodMaximum = FoodMaximumDefault;
     }
-    
+
     /// <summary>
     ///   Fires when the <see cref="Faction" /> joins a new <see cref="Team" />.
     /// </summary>
@@ -296,17 +337,17 @@ namespace MacroTools.FactionSystem
     /// Fired after the <see cref="Faction"/> leaves the game.
     /// </summary>
     public event EventHandler<Faction>? LeftGame;
-    
+
     /// <summary>
     /// Fired when the <see cref="Faction"/>'s has changed.
     /// </summary>
     public event EventHandler<Faction>? IconChanged;
-    
+
     /// <summary>
     /// Fired after the <see cref="Faction"/>'s status has changed.
     /// </summary>
     public event EventHandler<Faction>? StatusChanged;
-    
+
     /// <summary>
     ///   Returns all unit types which this <see cref="Faction" /> can only train a limited number of.
     /// </summary>
@@ -323,7 +364,7 @@ namespace MacroTools.FactionSystem
     {
       return _objectLimits[whichObject];
     }
-    
+
     /// <summary>
     ///   Registers a gold mine as belonging to this <see cref="Faction" />.
     ///   When the Faction leaves the game, all of their goldmines are removed.
@@ -393,7 +434,7 @@ namespace MacroTools.FactionSystem
       FactionManager.Register(newTeam);
       Player.SetTeam(newTeam);
     }
-    
+
     public QuestData AddQuest(QuestData questData)
     {
       questData.Add(this);
@@ -404,7 +445,7 @@ namespace MacroTools.FactionSystem
       questData.ProgressChanged += OnQuestProgressChanged;
       return questData;
     }
-    
+
     public int GetObjectLevel(int obj) => _objectLevels.ContainsKey(obj) ? _objectLevels[obj] : 0;
 
     /// <summary>
@@ -415,7 +456,7 @@ namespace MacroTools.FactionSystem
       _objectLevels[obj] = level;
       Player?.SetObjectLevel(obj, level);
     }
-    
+
     /// <summary>
     ///   Changes the ability's availability by the provided amount.
     ///   If the availability is higher than 0, the <see cref="player" /> with this <see cref="Faction" />
@@ -449,7 +490,7 @@ namespace MacroTools.FactionSystem
       if (_objectLimits[objectId] == 0)
         _objectLimits.Remove(objectId);
     }
-    
+
     /// <summary>
     ///   Sets the limit of the given object that the <see cref="Faction" /> can train, build, or research.
     /// </summary>
@@ -499,7 +540,7 @@ namespace MacroTools.FactionSystem
     {
       foreach (var power in _powers) yield return power;
     }
-    
+
     /// <summary>
     ///   Attempts to retrieve a <see cref="QuestData" /> belonging to this <see cref="Faction" /> with the given title.
     /// </summary>
@@ -517,13 +558,13 @@ namespace MacroTools.FactionSystem
         throw new Exception($"{Name} does not have a {nameof(QuestData)} of type {type.Name}");
       return quest;
     }
-    
+
     /// <summary>
     /// Returns all <see cref="QuestData"/>s the <see cref="Faction"/> can complete.
     /// </summary>
     /// <returns></returns>
     public List<QuestData> GetAllQuests() => _questsByName.Values.ToList();
-    
+
     private void ApplyPowers()
     {
       if (Player == null) return;
@@ -644,7 +685,7 @@ namespace MacroTools.FactionSystem
         {
           Player?.AddGold(HeroCost);
           _xp += GetHeroXP(unit);
-          if (LegendaryHeroManager.GetFromUnit(unit) != null) 
+          if (LegendaryHeroManager.GetFromUnit(unit) != null)
             _xp -= LegendaryHeroManager.GetFromUnit(unit)!.StartingXp;
           unit.DropAllItems();
           RemoveUnit(unit);
@@ -662,7 +703,7 @@ namespace MacroTools.FactionSystem
         {
           unit.SetOwner(
             Player?.GetTeam()?.Size > 1
-              ? playersToDistributeTo[GetRandomInt(0, playersToDistributeTo.Count-1)]
+              ? playersToDistributeTo[GetRandomInt(0, playersToDistributeTo.Count - 1)]
               : Player(GetBJPlayerNeutralVictim()), false);
         }
       }
@@ -680,7 +721,7 @@ namespace MacroTools.FactionSystem
         .Where(x => x.ScoreStatus == ScoreStatus.Undefeated && x.Player != Player && Player != null)
         .Select(x => x.Player)
         .ToList();
-      
+
       if (eligiblePlayers != null && eligiblePlayers.Any() && GameTime.GetGameTime() > 60)
       {
         DistributeUnits(eligiblePlayers);

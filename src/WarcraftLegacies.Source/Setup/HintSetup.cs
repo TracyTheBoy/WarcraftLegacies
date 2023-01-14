@@ -1,4 +1,4 @@
-using MacroTools.HintSystem;
+﻿using MacroTools.HintSystem;
 using WarcraftLegacies.Source.GameLogic.GameEnd;
 
 namespace WarcraftLegacies.Source.Setup
@@ -28,7 +28,7 @@ namespace WarcraftLegacies.Source.Setup
       Hint.Register(
         new Hint("If you want to support the team, support our Patreon at: https:;//www.patreon.com/lordsebas"));
       Hint.Register(new Hint("Control Points have towers which get stronger every turn, or when you research Fortify."));
-      Hint.Register(new Hint($"Win the game by capturing {ControlPointVictory.CpsVictory} Control Points."));
+      Hint.Register(new Hint($"Win the game by accumulating {VictoryConditionManager.GetRequiredVictoryPoints()} Victory Points."));
     }
   }
 }

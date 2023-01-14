@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
 using static War3Api.Common;
 
 namespace MacroTools.LegendSystem
@@ -10,6 +10,11 @@ namespace MacroTools.LegendSystem
   public static class CapitalManager
   {
     private static readonly Dictionary<unit, Capital> ByUnit = new();
+
+    /// <summary>
+    /// Returns all registered <see cref="Capital"/>s.
+    /// </summary>
+    public static List<Capital> GetAll() => ByUnit.Values.ToList();
 
     /// <summary>
     /// Registers a <see cref="Capital"/> to the <see cref="CapitalManager"/>.

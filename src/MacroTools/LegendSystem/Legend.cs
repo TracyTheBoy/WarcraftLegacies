@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using MacroTools.Extensions;
 using WCSharp.Events;
 using static War3Api.Common;
@@ -52,6 +52,11 @@ namespace MacroTools.LegendSystem
     /// Invoked when the <see cref="Unit"/> value changes.
     /// </summary>
     public event EventHandler<LegendChangeUnitEventArgs>? UnitChanged;
+
+    /// <summary>
+    /// Invoked when the <see cref="Unit"/> dies.
+    /// </summary>
+    public event EventHandler<LegendDiesEventArgs>? UnitDies;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Legend"/> class.
@@ -121,6 +126,14 @@ namespace MacroTools.LegendSystem
     protected void OnChangeOwner(LegendChangeOwnerEventArgs args)
     {
       ChangedOwner?.Invoke(this, args);
+    }
+
+    /// <summary>
+    /// Invokes the <see cref="ChangedOwner"/> event.
+    /// </summary>
+    protected void OnUnitDies(LegendDiesEventArgs args)
+    {
+      UnitDies?.Invoke(this, args);
     }
   }
 }

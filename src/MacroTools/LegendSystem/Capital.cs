@@ -14,7 +14,7 @@ namespace MacroTools.LegendSystem
     ///   Whether or not the unit changes ownership to its attacker when its hitpoints are reduced past a threshold.
     /// </summary>
     public bool Capturable { get; init; }
-    
+
     /// <summary>
     /// The number of living <see cref="Protector"/> making this <see cref="Legend"/> invulnerable.
     /// </summary>
@@ -24,12 +24,12 @@ namespace MacroTools.LegendSystem
     /// A user-friendly name for the <see cref="Capital"/>.
     /// </summary>
     public string Name => GetObjectName(UnitType);
-    
+
     private readonly List<Protector> _protectors = new();
     private trigger? _damageTrig;
     private trigger? _deathTrig;
     private trigger? _ownerTrig;
-    
+
     private void OnProtectorDeath(object? sender, Protector protector)
     {
       try
@@ -59,7 +59,7 @@ namespace MacroTools.LegendSystem
       Unit?.SetInvulnerable(true);
       protector.ProtectorDied += OnProtectorDeath;
     }
-    
+
     /// <inheritdoc />
     protected override void OnChangeUnit()
     {
@@ -67,6 +67,8 @@ namespace MacroTools.LegendSystem
       _deathTrig = CreateTrigger()
         .RegisterUnitEvent(Unit, EVENT_UNIT_DEATH)
         .AddAction(OnDeath);
+      
+  
 
       _damageTrig?.Destroy();
       _damageTrig = CreateTrigger()
@@ -81,23 +83,27 @@ namespace MacroTools.LegendSystem
           OnChangeOwner(new LegendChangeOwnerEventArgs(this, GetChangingUnitPrevOwner()));
         });
     }
-    
+
     private void OnDamaged()
     {
+      
       if (!Capturable || !(GetEventDamage() + 1 >= GetUnitState(Unit, UNIT_STATE_LIFE))) return;
       SetUnitOwner(Unit, GetOwningPlayer(GetEventDamageSource()), true);
       BlzSetEventDamage(0);
       SetUnitState(Unit, UNIT_STATE_LIFE, GetUnitState(Unit, UNIT_STATE_MAX_LIFE));
     }
-    
+
     private void OnDeath()
     {
-      if (string.IsNullOrEmpty(DeathMessage)) 
+      var killingPlayer = GetKillingUnit().OwningPlayer();
+      if (string.IsNullOrEmpty(DeathMessage))
         return;
       if (Hivemind && OwningPlayer != null)
         OwningPlayer.GetFaction()?.Obliterate();
-      
+
       DisplayTextToPlayer(GetLocalPlayer(), 0, 0, $"\n|cffffcc00CAPITAL DESTROYED|r\n{DeathMessage}");
+      OnUnitDies(new LegendDiesEventArgs(this, killingPlayer));
+
     }
   }
 }

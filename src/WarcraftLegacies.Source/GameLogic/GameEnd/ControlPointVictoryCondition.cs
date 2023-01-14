@@ -1,0 +1,44 @@
+﻿using System;
+using System.Linq;
+using MacroTools.ControlPointSystem;
+using MacroTools.Extensions;
+using MacroTools.FactionSystem;
+
+namespace WarcraftLegacies.Source.GameLogic.GameEnd
+{
+  /// <summary>
+  /// A <see cref="IVictoryCondition"/> based on the amount of <see cref="ControlPoint"/>s captured
+  /// </summary>
+  public class ControlPointVictoryCondition : IVictoryCondition
+  {
+    /// <inheritdoc/>
+    public int VictoryPoints { get; set; } = 9;
+
+    /// <inheritdoc/>
+    public int VictoryPointsWarning { get; set; } = 5;
+
+    /// <inheritdoc/>
+    public event EventHandler<VictoryConditionUpdatedEventArgs> VictoryConditionUpdated;
+
+    public ControlPointVictoryCondition()
+    {
+      foreach (var controlPoint in ControlPointManager.Instance.GetAllControlPoints())
+        controlPoint.ChangedOwner += ControlPointOwnerChanges;
+    }
+
+    /// <inheritdoc/>
+    public int GetCurrentVictoryPoints(Team whichTeam) =>
+      whichTeam.GetAllFactions().Where(faction => faction.Player != null).Sum(faction => faction.Player.GetControlPointCount());
+
+    private void ControlPointOwnerChanges(object? sender,
+      ControlPointOwnerChangeEventArgs controlPointOwnerChangeEventArgs)
+    {
+      var newOwnerTeam = controlPointOwnerChangeEventArgs.ControlPoint.Owner.GetTeam();
+      var formerOwnerTeam = controlPointOwnerChangeEventArgs.FormerOwner.GetTeam();
+      if (newOwnerTeam == null || newOwnerTeam == formerOwnerTeam) return;
+      Console.WriteLine("cp taken");
+      VictoryConditionUpdated?.Invoke(this, new VictoryConditionUpdatedEventArgs(newOwnerTeam));
+    }
+  }
+}
+

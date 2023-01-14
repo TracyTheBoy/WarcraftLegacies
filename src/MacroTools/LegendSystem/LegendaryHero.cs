@@ -23,7 +23,7 @@ namespace MacroTools.LegendSystem
     private trigger? _ownerTrig;
     private readonly string? _name;
     private bool _permaDies;
-    
+
     /// <summary>
     /// If true, the <see cref="Legend"/> has a custom <see cref="playercolor"/> rather than having its color based
     /// on its owning player.
@@ -34,7 +34,7 @@ namespace MacroTools.LegendSystem
     /// Fired when the <see cref="Legend"/> permanently dies, after it is removed from the game.
     /// </summary>
     public event EventHandler<LegendaryHero>? OnLegendPermaDeath;
-    
+
     /// <summary>
     ///   Fired when the <see cref="Legend" /> permanently dies.
     /// </summary>
@@ -44,7 +44,7 @@ namespace MacroTools.LegendSystem
     /// Invoked when the <see cref="LegendaryHero"/> deals damage.
     /// </summary>
     public event EventHandler? DealtDamage;
-    
+
     /// <summary>
     ///   If true, the Legend is permanently removed from the game upon death.
     /// </summary>
@@ -56,7 +56,7 @@ namespace MacroTools.LegendSystem
         RefreshDummy();
       }
     }
-    
+
     /// <summary>
     /// A user-friendly name for the <see cref="Legend"/>.
     /// If this hasn't been set, the system will guess an appropriate name based on the <see cref="Legend"/> unit type.
@@ -72,7 +72,7 @@ namespace MacroTools.LegendSystem
         return Unit?.GetProperName() ?? "";
       }
     }
-    
+
     /// <summary>
     ///   The colour of the Legend's in-game model.
     /// </summary>
@@ -83,16 +83,16 @@ namespace MacroTools.LegendSystem
       {
         _playerColor = value;
         HasCustomColor = true;
-        if (Unit != null) 
+        if (Unit != null)
           SetUnitColor(Unit, _playerColor);
       }
     }
-    
+
     /// <summary>
     /// How much experience a hero should not distribute when refunded. Must be set manually per hero.
     /// </summary>
     public int StartingXp { get; set; }
-    
+
     /// <summary>
     /// The special effect that appears when this <see cref="Legend"/> dies permanently.
     /// </summary>
@@ -102,7 +102,7 @@ namespace MacroTools.LegendSystem
     /// The <see cref="LegendaryHero"/> will spawn with <see cref="Artifact"/>s with these IDs the first time they are created.
     /// </summary>
     public IEnumerable<int> StartingArtifactItemTypeIds { get; init; } = Array.Empty<int>();
-    
+
     /// <summary>
     /// Initializes a new instance of the <see cref="LegendaryHero"/> class.
     /// </summary>
@@ -110,7 +110,7 @@ namespace MacroTools.LegendSystem
     {
       _name = name;
     }
-    
+
     /// <summary>
     /// Forces the <see cref="Legend"/> to appear somewhere in the game world as a unit.
     /// <para>If the <see cref="Legend"/> is alive, it moves there. If it's dead, it revives as well. If it doesn't exist,
@@ -134,12 +134,12 @@ namespace MacroTools.LegendSystem
         SetUnitY(Unit, position.Y);
         SetUnitFacing(Unit, facing);
       }
-      if (GetOwningPlayer(Unit) != owner) 
+      if (GetOwningPlayer(Unit) != owner)
         SetUnitOwner(Unit, owner, true);
 
       RefreshDummy();
     }
-    
+
     /// <summary>
     /// A <see cref="Legend"/> will die permanently if it dies while all of its dependencies are dead or captured.
     /// <para>This removes all of those dependencies.</para>
@@ -162,9 +162,10 @@ namespace MacroTools.LegendSystem
       GroupAddUnit(_diesWithout, u);
       RefreshDummy();
     }
-    
+
     private void OnDeath()
     {
+      var killingPlayer = GetKillingUnit().OwningPlayer();
       if (GetOwningPlayer(Unit) == Player(PLAYER_NEUTRAL_AGGRESSIVE) && DeathMessage != "" &&
           !string.IsNullOrEmpty(DeathMessage) && !IsUnitType(Unit, UNIT_TYPE_STRUCTURE))
         DisplayTextToPlayer(GetLocalPlayer(), 0, 0, $"\n|cffffcc00LEGENDARY CREEP DEATH|r\n{DeathMessage}");
@@ -192,6 +193,7 @@ namespace MacroTools.LegendSystem
       if (anyOwned == false) PermanentlyKill();
 
       DestroyGroup(tempGroup);
+      OnUnitDies(new LegendDiesEventArgs(this, killingPlayer));
     }
 
     /// <inheritdoc />
@@ -201,9 +203,9 @@ namespace MacroTools.LegendSystem
       _castTrig?.Destroy();
       _ownerTrig?.Destroy();
 
-      if (Unit == null) 
+      if (Unit == null)
         return;
-      
+
       _deathTrig = CreateTrigger()
         .RegisterUnitEvent(Unit, EVENT_UNIT_DEATH)
         .AddAction(OnDeath);
@@ -221,7 +223,7 @@ namespace MacroTools.LegendSystem
         DealtDamage?.Invoke(this, EventArgs.Empty);
       }, Unit);
       SetUnitColor(Unit, HasCustomColor ? _playerColor : GetPlayerColor(GetOwningPlayer(Unit)));
-      if (GetHeroXP(Unit) < StartingXp) 
+      if (GetHeroXP(Unit) < StartingXp)
         SetHeroXP(Unit, StartingXp, true);
       if (StartingArtifactItemTypeIds.Any())
         foreach (var artifactItemTypeId in StartingArtifactItemTypeIds)
@@ -230,10 +232,10 @@ namespace MacroTools.LegendSystem
           ArtifactManager.Register(artifact);
           Unit.AddItemSafe(artifact.Item);
         }
-        
+
       RefreshDummy();
     }
-    
+
     private void OnPermaDeath()
     {
       if (IsUnitType(Unit, UNIT_TYPE_HERO))
@@ -248,7 +250,7 @@ namespace MacroTools.LegendSystem
         }
       }
 
-      if (string.IsNullOrEmpty(DeathMessage)) 
+      if (string.IsNullOrEmpty(DeathMessage))
         return;
       DisplayTextToPlayer(GetLocalPlayer(), 0, 0, $"\n|cffffcc00HERO SLAIN|r\n{DeathMessage}");
     }
@@ -262,7 +264,7 @@ namespace MacroTools.LegendSystem
       OnLegendPermaDeath?.Invoke(this, this);
       PermanentlyDied?.Invoke(this, this);
     }
-    
+
     private void RefreshDummy()
     {
       if (_permaDies)
@@ -298,7 +300,7 @@ namespace MacroTools.LegendSystem
 
       UnitRemoveAbility(Unit, _dummyDieswithout);
     }
-    
+
     private void OnCast()
     {
       if (GetSpellAbilityId() != _dummyDieswithout) return;
