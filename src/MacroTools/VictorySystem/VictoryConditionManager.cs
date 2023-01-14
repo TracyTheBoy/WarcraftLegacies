@@ -11,14 +11,29 @@ namespace WarcraftLegacies.Source.GameLogic.GameEnd
     private static bool _gameWon;
     private static int VictoryPoints { get; set; }
     private static int VictoryPointsWarning { get; set; }
-    public static List<IVictoryCondition> VictoryConditions { get; set; }
-    public static Dictionary<string, int> VictoryPointsByTeamNames { get; set; } = new();
 
+    /// <summary>
+    /// <see cref="IVictoryCondition"/>s registered to the <see cref="VictoryConditionManager"/> via <see cref="Setup"/>
+    /// </summary>
+    public static List<IVictoryCondition> VictoryConditions { get; set; } = new();
+
+    /// <summary>
+    /// Keeps track of how many <see cref="VictoryPoints"/> each <see cref="Team"/> has
+    /// </summary>
+    private static Dictionary<string, int> VictoryPointsByTeamNames { get; set; } = new();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns>The amount of <see cref="VictoryPoints"/> required to win the game</returns>
     public static int GetRequiredVictoryPoints() => VictoryPoints;
 
+    /// <summary>
+    /// Initialization method of the <see cref="VictoryConditionManager"/>. Call this before using the class.
+    /// </summary>
+    /// <param name="victoryConditions"></param>
     public static void Setup(List<IVictoryCondition> victoryConditions)
     {
-
       foreach (var victoryCondition in victoryConditions)
       {
         victoryCondition.VictoryConditionUpdated += OnVictoryConditionUpdated;
@@ -47,14 +62,13 @@ namespace WarcraftLegacies.Source.GameLogic.GameEnd
     }
 
     private static void TeamWarning(Team whichTeam, int victoryPoints) =>
-  DisplayTextToPlayer(GetLocalPlayer(), 0, 0,
-    $"\n{VictoryColor}TEAM VICTORY IMMINENT|r\n{whichTeam.Name} has accumulated {victoryPoints} out of {VictoryPoints} Victory Points required to win the game!");
+      DisplayTextToPlayer(GetLocalPlayer(), 0, 0,
+        $"\n{VictoryColor}TEAM VICTORY IMMINENT|r\n{whichTeam.Name} has accumulated {victoryPoints} out of {VictoryPoints} Victory Points required to win the game!");
 
     private static void TeamVictory(Team whichTeam)
     {
       ClearTextMessages();
-      DisplayTextToPlayer(GetLocalPlayer(), 0, 0,
-        $"{VictoryColor}\nTEAM VICTORY!|r\nThe {whichTeam.Name} has won the game! You may choose to continue playing.");
+      DisplayTextToPlayer(GetLocalPlayer(), 0, 0, $"{VictoryColor}\nTEAM VICTORY!|r\nThe {whichTeam.Name} has won the game! You may choose to continue playing.");
       PlayThematicMusic(whichTeam.VictoryMusic);
       _gameWon = true;
     }
