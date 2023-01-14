@@ -1,10 +1,11 @@
 ﻿using MacroTools.FactionSystem;
+using MacroTools.VictorySystem.Conditions;
 using System.Collections.Generic;
 using static War3Api.Common;
 
 namespace WarcraftLegacies.Source.GameLogic.GameEnd
 {
-  public static class Victory
+  public static class VictoryConditionManager
   {
     private const string VictoryColor = "|cff911499";
     private static bool _gameWon;

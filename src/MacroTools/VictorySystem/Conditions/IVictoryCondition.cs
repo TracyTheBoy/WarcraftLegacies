@@ -1,8 +1,13 @@
 ﻿using MacroTools.FactionSystem;
 using System;
+using WarcraftLegacies.Source.GameLogic.GameEnd;
 
-namespace WarcraftLegacies.Source.GameLogic.GameEnd
+namespace MacroTools.VictorySystem.Conditions
 {
+
+  /// <summary>
+  /// Used to implement new conditions used by the <see cref="VictoryConditionManager"/>
+  /// </summary>
   public interface IVictoryCondition
   {
     /// <summary>
@@ -26,6 +31,6 @@ namespace WarcraftLegacies.Source.GameLogic.GameEnd
     /// Fired when the VictoryCondition got updated
     /// </summary>
 
-    public event EventHandler<VictoryConditionUpdatedEventArgs> VictoryConditionUpdated;
+    public event EventHandler<VictoryConditionUpdatedEventArgs>? VictoryConditionUpdated;
   }
 }

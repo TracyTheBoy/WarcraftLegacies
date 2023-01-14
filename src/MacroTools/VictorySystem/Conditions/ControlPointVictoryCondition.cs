@@ -3,8 +3,9 @@ using System.Linq;
 using MacroTools.ControlPointSystem;
 using MacroTools.Extensions;
 using MacroTools.FactionSystem;
+using WarcraftLegacies.Source.GameLogic.GameEnd;
 
-namespace WarcraftLegacies.Source.GameLogic.GameEnd
+namespace MacroTools.VictorySystem.Conditions
 {
   /// <summary>
   /// A <see cref="IVictoryCondition"/> based on the amount of <see cref="ControlPoint"/>s captured
@@ -18,8 +19,11 @@ namespace WarcraftLegacies.Source.GameLogic.GameEnd
     public int VictoryPointsWarning { get; set; } = 5;
 
     /// <inheritdoc/>
-    public event EventHandler<VictoryConditionUpdatedEventArgs> VictoryConditionUpdated;
+    public event EventHandler<VictoryConditionUpdatedEventArgs>? VictoryConditionUpdated;
 
+    /// <summary>
+    /// Default constructur that initializes the <see cref="ControlPointVictoryCondition"/>
+    /// </summary>
     public ControlPointVictoryCondition()
     {
       foreach (var controlPoint in ControlPointManager.Instance.GetAllControlPoints())

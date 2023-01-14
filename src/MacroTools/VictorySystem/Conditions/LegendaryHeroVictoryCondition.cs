@@ -3,8 +3,9 @@ using MacroTools.FactionSystem;
 using MacroTools.LegendSystem;
 using System;
 using System.Linq;
+using WarcraftLegacies.Source.GameLogic.GameEnd;
 
-namespace WarcraftLegacies.Source.GameLogic.GameEnd
+namespace MacroTools.VictorySystem.Conditions
 {
   /// <summary>
   /// A <see cref="IVictoryCondition"/> based on the amount of <see cref="LegendaryHero"/>es killed 
@@ -18,10 +19,10 @@ namespace WarcraftLegacies.Source.GameLogic.GameEnd
     public int VictoryPointsWarning { get; set; } = 1;
 
     /// <inheritdoc/>
-    public event EventHandler<VictoryConditionUpdatedEventArgs> VictoryConditionUpdated;
+    public event EventHandler<VictoryConditionUpdatedEventArgs>? VictoryConditionUpdated;
 
     /// <summary>
-    /// 
+    /// Default constructur that initializes the <see cref="LegendaryHeroVictoryCondition"/>
     /// </summary>
     public LegendaryHeroVictoryCondition()
     {

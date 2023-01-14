@@ -83,6 +83,11 @@ namespace MacroTools.FactionSystem
     public int CaptialsDestroyed { get; set; }
 
     /// <summary>
+    /// The amount of <see cref="Capital"/>s this faction owns
+    /// </summary>
+    public int CapitalsOwned { get; set; }
+
+    /// <summary>
     /// The amount of <see cref="LegendaryHero"/>es this faction has killed
     /// </summary>
     public int LegendaryHeroesKilled { get; set; }
@@ -149,6 +154,19 @@ namespace MacroTools.FactionSystem
         return;
 
       LegendaryHeroesKilled++;
+    }
+
+    /// <summary>
+    /// Increments the <see cref="LegendaryHeroesKilled"/> when a <see cref="Faction"/> has killed a <see cref="LegendaryHero"/> that is not part of its <see cref="Team"/>
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="args"></param>
+    public void OnCapitalOwnerChanged(object? sender, LegendChangeOwnerEventArgs args)
+    {
+      if (args.Legend.OwningPlayer.GetFaction().Name != Name)
+        return;
+
+      CapitalsOwned++;
     }
 
     /// <summary>
