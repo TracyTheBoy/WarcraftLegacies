@@ -13,16 +13,16 @@ namespace MacroTools.VictorySystem.Conditions
   public class ControlPointVictoryCondition : IVictoryCondition
   {
     /// <inheritdoc/>
-    public int VictoryPoints { get; set; } = 9;
+    public int VictoryPoints { get; set; } = 18;
 
     /// <inheritdoc/>
-    public int VictoryPointsWarning { get; set; } = 5;
+    public int VictoryPointsWarning { get; set; } = 15;
 
     /// <inheritdoc/>
     public event EventHandler<VictoryConditionUpdatedEventArgs>? VictoryConditionUpdated;
 
     /// <summary>
-    /// Default constructur that initializes the <see cref="ControlPointVictoryCondition"/>
+    /// Default constructor that initializes the <see cref="ControlPointVictoryCondition"/>
     /// </summary>
     public ControlPointVictoryCondition()
     {
@@ -32,7 +32,7 @@ namespace MacroTools.VictorySystem.Conditions
 
     /// <inheritdoc/>
     public int GetCurrentVictoryPoints(Team whichTeam) =>
-      whichTeam.GetAllFactions().Where(faction => faction.Player != null).Sum(faction => faction.Player.GetControlPointCount());
+      whichTeam.GetAllFactions().Where(faction => faction.Player != null).Sum(faction => faction.Player.GetControlPointCount() / 5);
 
     private void ControlPointOwnerChanges(object? sender,
       ControlPointOwnerChangeEventArgs controlPointOwnerChangeEventArgs)
@@ -40,7 +40,6 @@ namespace MacroTools.VictorySystem.Conditions
       var newOwnerTeam = controlPointOwnerChangeEventArgs.ControlPoint.Owner.GetTeam();
       var formerOwnerTeam = controlPointOwnerChangeEventArgs.FormerOwner.GetTeam();
       if (newOwnerTeam == null || newOwnerTeam == formerOwnerTeam) return;
-      Console.WriteLine("cp taken");
       VictoryConditionUpdated?.Invoke(this, new VictoryConditionUpdatedEventArgs(newOwnerTeam));
     }
   }

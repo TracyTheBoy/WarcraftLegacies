@@ -1,17 +1,18 @@
-﻿using static War3Api.Common;
+﻿using System;
+using static War3Api.Common;
 namespace MacroTools.LegendSystem
 {
   /// <summary>
   /// Event arguments for when a <see cref="Legend"/> dies.
   /// </summary>
-  public class LegendDiesEventArgs
+  public class LegendDiesEventArgs : EventArgs
   {
     /// <summary>
     /// Initializes a new instance of the <see cref="LegendDiesEventArgs"/> class.
     /// </summary>
     public LegendDiesEventArgs(Legend killedLegend, player killingPlayer)
     {
-      this.KilledLegend = killedLegend;
+      KilledLegend = killedLegend;
       KillingPlayer = killingPlayer;
     }
 

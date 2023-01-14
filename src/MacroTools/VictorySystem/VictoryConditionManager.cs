@@ -1,5 +1,6 @@
 ﻿using MacroTools.FactionSystem;
 using MacroTools.VictorySystem.Conditions;
+using System;
 using System.Collections.Generic;
 using static War3Api.Common;
 
@@ -22,9 +23,6 @@ namespace WarcraftLegacies.Source.GameLogic.GameEnd
     /// </summary>
     private static Dictionary<string, int> VictoryPointsByTeamNames { get; set; } = new();
 
-    /// <summary>
-    /// 
-    /// </summary>
     /// <returns>The amount of <see cref="VictoryPoints"/> required to win the game</returns>
     public static int GetRequiredVictoryPoints() => VictoryPoints;
 
@@ -52,6 +50,7 @@ namespace WarcraftLegacies.Source.GameLogic.GameEnd
       {
         victoryPoints += victoryCondition.GetCurrentVictoryPoints(victoryConditionUpdatedEventArgs.Team);
       }
+
       if (!ShowVictoryMessage(victoryConditionUpdatedEventArgs.Team, victoryPoints))
         return;
 

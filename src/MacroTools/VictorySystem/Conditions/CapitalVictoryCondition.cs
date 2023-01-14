@@ -22,7 +22,7 @@ namespace MacroTools.VictorySystem.Conditions
     public event EventHandler<VictoryConditionUpdatedEventArgs>? VictoryConditionUpdated;
 
     /// <summary>
-    /// Default constructur that initializes the <see cref="CapitalVictoryCondition"/>
+    /// Default constructor that initializes the <see cref="CapitalVictoryCondition"/>
     /// </summary>
     public CapitalVictoryCondition()
     {
@@ -34,15 +34,23 @@ namespace MacroTools.VictorySystem.Conditions
           capital.ChangedOwner += faction.OnCapitalOwnerChanged;
         }
         capital.UnitDies += OnUnitDies;
+        capital.ChangedOwner += OnUnitChangeOwner;
       }
     }
 
     /// <inheritdoc/>
-    public int GetCurrentVictoryPoints(Team team) => team.GetAllFactions().Select(f => f.CaptialsDestroyed).Sum() + team.GetAllFactions().Select(f => f.CapitalsOwned).Sum();
+    public int GetCurrentVictoryPoints(Team team) => 
+      team.GetAllFactions().Where(f => f.Player != null).Select(f => f.CaptialsDestroyed).Sum() 
+      + team.GetAllFactions().Where(f => f.Player != null).Select(f => f.CapitalsOwned).Sum();
 
     private void OnUnitDies(object? sender, LegendDiesEventArgs legendDiesEventArgs)
     {
       VictoryConditionUpdated?.Invoke(this, new VictoryConditionUpdatedEventArgs(legendDiesEventArgs.KillingPlayer.GetTeam()));
+    }
+
+    private void OnUnitChangeOwner(object? sender, LegendChangeOwnerEventArgs legendChangeOwnerEventArgs)
+    {
+      VictoryConditionUpdated?.Invoke(this, new VictoryConditionUpdatedEventArgs(legendChangeOwnerEventArgs.Legend.OwningPlayer.GetTeam()));
     }
   }
 }

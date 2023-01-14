@@ -68,8 +68,6 @@ namespace MacroTools.LegendSystem
         .RegisterUnitEvent(Unit, EVENT_UNIT_DEATH)
         .AddAction(OnDeath);
       
-  
-
       _damageTrig?.Destroy();
       _damageTrig = CreateTrigger()
         .RegisterUnitEvent(Unit, EVENT_UNIT_DAMAGED)

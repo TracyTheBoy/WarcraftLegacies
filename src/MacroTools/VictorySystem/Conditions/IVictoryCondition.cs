@@ -21,7 +21,7 @@ namespace MacroTools.VictorySystem.Conditions
     public int VictoryPointsWarning { get; set; }
 
     /// <summary>
-    /// Returns the Amount of Victory Points currently accumulated by the specified <paramref name="team"/>  for this <see cref="IVictoryCondition"/>
+    /// Returns the amount of Victory Points currently acquired by the specified <paramref name="team"/> for this <see cref="IVictoryCondition"/>
     /// </summary>
     /// <param name="team"></param>
     /// <returns></returns>

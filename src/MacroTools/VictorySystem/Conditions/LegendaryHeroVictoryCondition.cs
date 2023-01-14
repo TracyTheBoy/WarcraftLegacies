@@ -22,7 +22,7 @@ namespace MacroTools.VictorySystem.Conditions
     public event EventHandler<VictoryConditionUpdatedEventArgs>? VictoryConditionUpdated;
 
     /// <summary>
-    /// Default constructur that initializes the <see cref="LegendaryHeroVictoryCondition"/>
+    /// Default constructor that initializes the <see cref="LegendaryHeroVictoryCondition"/>
     /// </summary>
     public LegendaryHeroVictoryCondition()
     {
@@ -37,8 +37,7 @@ namespace MacroTools.VictorySystem.Conditions
     }
 
     /// <inheritdoc/>
-
-    public int GetCurrentVictoryPoints(Team team) => team.GetAllFactions().Select(f => f.LegendaryHeroesKilled).Sum();
+    public int GetCurrentVictoryPoints(Team team) => team.GetAllFactions().Where(f => f.Player != null).Select(f => f.LegendaryHeroesKilled).Sum();
 
     private void OnUnitDies(object? sender, LegendDiesEventArgs legendDiesEventArgs)
     {

@@ -61,7 +61,7 @@ namespace WarcraftLegacies.Source.Setup
       SpellsSetup.Setup();
       CheatSetup.Setup();
       CommandSetup.Setup();
-      VictoryConditionManager.Setup(new List<IVictoryCondition> { new ControlPointVictoryCondition(), new LegendaryHeroVictoryCondition() });
+      VictoryConditionManager.Setup(new List<IVictoryCondition> { new ControlPointVictoryCondition() });
       SilvermoonDies.Setup();
       GameTime.Setup();
       FactionMultiboard.Setup();

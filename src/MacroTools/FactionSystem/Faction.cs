@@ -126,7 +126,7 @@ namespace MacroTools.FactionSystem
     }
 
     /// <summary>
-    /// Increments the <see cref="CaptialsDestroyed"/> when a <see cref="Faction"/> has destroyed a <see cref="Capital"/> that is not part of its <see cref="Team"/>
+    /// Increments <see cref="CaptialsDestroyed"/> when a <see cref="Faction"/> has destroyed a <see cref="Capital"/> that is not part of its <see cref="Team"/>
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="args"></param>
@@ -135,13 +135,14 @@ namespace MacroTools.FactionSystem
       if (args.KillingPlayer.GetFaction().Name != Name)
         return;
 
-      if (args.KilledLegend.OwningPlayer != null && args.KilledLegend.OwningPlayer.GetTeam().Contains(Player))
+      if (args.KilledLegend.OwningPlayer.GetTeam().Contains(Player))
         return;
+
       CaptialsDestroyed++;
     }
 
     /// <summary>
-    /// Increments the <see cref="LegendaryHeroesKilled"/> when a <see cref="Faction"/> has killed a <see cref="LegendaryHero"/> that is not part of its <see cref="Team"/>
+    /// Increments <see cref="LegendaryHeroesKilled"/> when a <see cref="Faction"/> has killed a <see cref="LegendaryHero"/> that is not part of its <see cref="Team"/>
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="args"></param>
@@ -157,12 +158,15 @@ namespace MacroTools.FactionSystem
     }
 
     /// <summary>
-    /// Increments the <see cref="LegendaryHeroesKilled"/> when a <see cref="Faction"/> has killed a <see cref="LegendaryHero"/> that is not part of its <see cref="Team"/>
+    /// Increments <see cref="CapitalsOwned"/> when a <see cref="Faction"/> has killed a <see cref="LegendaryHero"/> that is not part of its <see cref="Team"/>
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="args"></param>
     public void OnCapitalOwnerChanged(object? sender, LegendChangeOwnerEventArgs args)
     {
+      if (args.PreviousOwner.GetFaction().Name == Name)
+        CapitalsOwned--;
+
       if (args.Legend.OwningPlayer.GetFaction().Name != Name)
         return;
 
@@ -170,7 +174,7 @@ namespace MacroTools.FactionSystem
     }
 
     /// <summary>
-    ///   Displayed to the <see cref="Faction" /> when the game starts.
+    /// Displayed to the <see cref="Faction" /> when the game starts.
     /// </summary>
     public string? IntroText { get; init; }
 
